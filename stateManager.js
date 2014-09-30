@@ -22,7 +22,8 @@ window.state = function(){
     var _states = {};
     var _currentState = null;
 
-    function State(name) {
+    function State(name, parentState) {
+        this._parent =  (typeof parentState === "undefined") ? null : parentState;
         this._states = {};
         this._currentSubstate = null;
         this._isPaused = false;
@@ -35,7 +36,7 @@ window.state = function(){
             log("Substate {" + name + "} is already member of {" + this.name + "} -> Overwrite");
         }
         log("Create Substate {" + name + "} in State {" + this.name + "}");
-        var state = new State(name);
+        var state = new State(name, this);
         this._states[name] = state;
         return state;
     };
@@ -64,7 +65,7 @@ window.state = function(){
     };
 
     State.prototype.closeSubstate = function(p){
-        log("Trying to close Substate {" + name + "} in State {" + this.name + "}");
+        log("Trying to close Substate in State {" + this.name + "}");
         if (this._currentSubstate !== null){
             this._currentSubstate.close(p);
             this.resume(p);
@@ -99,7 +100,7 @@ window.state = function(){
      */
     State.prototype.resume = function(p){
         log("Resume State {" + this.name + "}");
-        this._isPaused = true;
+        this._isPaused = false;
         if (this.onResume !== null) {
             this.onResume.call(this,p);
         }
@@ -112,6 +113,11 @@ window.state = function(){
         log("Close State {" + this.name + "}");
         if (this.onClose !== null) {
             this.onClose.call(this,p);
+        }
+        if (this._parent !== null){
+            if (this._parent._isPaused){
+                this._parent.resume(p);
+            }
         }
     };
 
