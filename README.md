@@ -4,7 +4,7 @@ Simple State System
 ```javascript
 
 // enable/disable logging
-state.setLogging(true);
+State.setLogging(true);
 
 // create a new State named "loading"
 var loading = State.Manager.createState("loading");
