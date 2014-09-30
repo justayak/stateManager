@@ -1,7 +1,7 @@
 /**
  * Created by Julian on 9/30/2014.
  */
-window.state = function(){
+window.State = function(){
 
     var isLogActive = false;
 

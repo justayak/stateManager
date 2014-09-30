@@ -13,12 +13,12 @@ Hey
 
 $(function(){
 
-    state.setLogging(true);
-    var loading = state.Manager.createState("loading");
-    var game = state.Manager.createState("game");
+    State.setLogging(true);
+    var loading = State.Manager.createState("loading");
+    var game = State.Manager.createState("game");
     var test = game.createSubstate("subgame");
     loading.onStart = function(){
-        state.Manager.setState("game");
+        State.Manager.setState("game");
     };
 
     game.onStart = function(){
@@ -36,7 +36,7 @@ $(function(){
     }
 
 
-    state.Manager.setState("loading");
+    State.Manager.setState("loading");
 
 });
 
