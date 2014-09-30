@@ -3,7 +3,7 @@
  */
 window.state = function(){
 
-    var isLogActive = true;
+    var isLogActive = false;
 
     /**
      * Log data
@@ -23,10 +23,10 @@ window.state = function(){
     var _currentState = null;
 
     function State(name) {
-        this._states = [];
+        this._states = {};
         this._currentSubstate = null;
         this._isPaused = false;
-        this.name;
+        this.name = name;
         this.onPause = this.onResume = this.onStart = this.onClose = null;
     };
 
@@ -36,6 +36,7 @@ window.state = function(){
         }
         log("Create Substate {" + name + "} in State {" + this.name + "}");
         var state = new State(name);
+        this._states[name] = state;
         return state;
     };
 
@@ -55,7 +56,7 @@ window.state = function(){
             if (this._currentSubstate !== null) {
                 this._currentSubstate.close(p);
             }
-            newState.open(p);
+            newState.start(p);
             this._currentSubstate = newState;
         } else {
             log("Could not find Substate {" + name + "} in State {" + this.name + "}");
@@ -76,6 +77,7 @@ window.state = function(){
      * Startup state
      */
     State.prototype.start = function(p){
+        log("Start State {" + this.name + "}");
         if (this.onStart !== null){
             this.onStart.call(this,p);
         }
@@ -85,6 +87,7 @@ window.state = function(){
      * Askes the state to pause
      */
     State.prototype.pause = function(p){
+        log("Pause State {" + this.name + "}");
         this._isPaused = true;
         if (this.onPause !== null) {
             this.onPause.call(this,p);
@@ -95,6 +98,7 @@ window.state = function(){
      * resumes program from pause
      */
     State.prototype.resume = function(p){
+        log("Resume State {" + this.name + "}");
         this._isPaused = true;
         if (this.onResume !== null) {
             this.onResume.call(this,p);
@@ -105,6 +109,7 @@ window.state = function(){
      * Close state
      */
     State.prototype.close = function(p){
+        log("Close State {" + this.name + "}");
         if (this.onClose !== null) {
             this.onClose.call(this,p);
         }
@@ -121,6 +126,7 @@ window.state = function(){
              * @returns {state.State}
              */
             createState: function(name) {
+                log("Create State {" + name + "}");
                 if (name in _states) {
                     log("Overwriting State {" + name + "}");
                 }
@@ -134,6 +140,7 @@ window.state = function(){
              * @param name {String}
              */
             setState: function(name) {
+                log("Try set State {" + name + "}");
                 if (name in _states) {
                     if (_currentState !== null) {
                         _currentState.close();

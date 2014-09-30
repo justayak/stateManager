@@ -3,6 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>StateManager</title>
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="stateManager.js"></script>
 </head>
 <body>
@@ -10,7 +11,33 @@ Hey
 </body>
 <script>
 
-    
+$(function(){
+
+    state.setLogging(true);
+    var loading = state.Manager.createState("loading");
+    var game = state.Manager.createState("game");
+    var test = game.createSubstate("subgame");
+    loading.onStart = function(){
+        state.Manager.setState("game");
+    };
+
+    game.onStart = function(){
+        setTimeout(function(){
+            game.setSubstate("subgame");
+        },1000);
+    };
+
+    test.onStart = function(){
+        console.log("YAA");
+        setTimeout(function(){
+            game.closeSubstate();
+        },1000);
+    }
+
+
+    state.Manager.setState("loading");
+
+});
 
 </script>
 </html>
